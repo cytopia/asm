@@ -7,12 +7,11 @@ global _start
 _start:
     push   5
     call   add42
-; void _exit(int status);
-    mov    ebx, eax        ; return EAX value as exit code
-    mov    eax, 1          ; set SYS_EXIT (kernel opcode 1) for upcoming SYSCALL
-    int    0x80            ; make SYSCALL
+    call   quit
 
-; Define: int add42(int x)
+;------------------------------------------
+; int add42(int x);
+; Add 42 to whatever integer val is provided
 add42:
     ; prologue (required)
     push   ebp             ; Save base pointer on stack
@@ -24,4 +23,13 @@ add42:
     ; epilogue (required)
     mov    esp, ebp        ; Set stack pointer to current base pointer
     pop    ebp             ; Restore base pointer from stack
+    ret                    ; pop EAX && jmp EAX
+
+;------------------------------------------
+; void exit(int status)
+; Exit program and restore resources
+quit:
+    mov    ebx, eax        ; return EAX value as exit code
+    mov    eax, 1          ; set SYS_EXIT (kernel opcode 1) for upcoming SYSCALL
+    int    0x80            ; make SYSCALL
     ret                    ; pop EAX && jmp EAX
